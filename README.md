@@ -59,3 +59,5 @@ This will offset that subtitle while preserving its duration.
 2. In the *New Time A*/*New Time B* fields adjust both timestamps by the same amount backward/forward in time.
 	> Eg: if sub A's time is `00:02:12.340` and B's `00:05:52.560` then to shift all the subtitles equally back by 2s they should become `00:02:10.340` and `00:02:50.340`, respectively.
 3. Click *OK*.
+
+Effectively like Shift Time but using absolute timestamps and only adjusting the selected subtitles.
