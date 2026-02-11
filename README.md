@@ -1,27 +1,61 @@
 ## Aegisub Timewarp
 
-### What does this do?
-
-This is a tool for manipulating timing in Aegisub. Say you've already subtitled a video but then find out that the version of the video you were subtitling against ran at 30fps when it's meant to run at 29.97fps. Or maybe you want to speed up a video to play at double speed and you need to update the subtitles to match.
-
-This is done through the use of providing before and after times for two reference points, A and B. Times will be stretched linearly such that Original Time A becomes New Time A and Original Time B becomes New Time B. All selected lines will have their start/end times adjusted proportionally.
-
-You can also just use this plugin as a more precise Shift Times, since Shift Times only works with centiseconds but this works with milliseconds. As long as the time between the two original points is the same duration as the time between the two new points, no stretching will occur, only shifting.
+Timewarp is an Aegisub plugin for batch adjustments of subtitle timing. Multiple subtitles can be selected and the timestamps between the first and last selection (A and B) automatically interpolated/stretched proportionally to match new timestamp values.
 
 ![Diagram](diagram.svg)
 
-In the diagram above, the blue rectangles represent unselected lines and the yellow rectangles represent selected lines. The red lines represent the 4 reference times.
+> In the diagram above the gray rectangles represent unselected subtitles and the green rectangles selected subtitles. The bright green lines represent the A and B start times. The new values have adjusted the timestamp offset and duration of the intermediate subtitles between the A and B selections.
 
-### Installation
 
-To install, just copy `timewarp.lua` to your Aegisub Automation autoload directory. Restart Aegisub or do "Rescan Autoload Dir".
+## Use cases
 
-### Usage
+Say you've already subtitled a video but then find out that the version of the video you were subtitling against ran at 30fps when it's meant to run at 29.97fps, causing a desync. Or maybe you want to speed up a video to play at double speed and you need to update the subtitles to match. This plugin simplifies this.
 
-First you need to choose two reference points. The reference points do not have to be at the beginning and end of the region you want to stretch, but the further apart the reference points are the more accurate the operation will be.
+Timewarp can also be used as a more precise alternative to Aegisub's native Shift Times, for just the selected subtitles. Shift Times only supports centisecond resolution but Timewarp supports milliseconds (and centiseconds, depending on the fractional input).
 
-The easiest times to accurately match are scene changes. Locate a line that's meant to disappear at a scene change. The earlier in your video the better. Select it and press Ctrl+4 to jump to the last frame of the line. Make a note of the current time, this will be Original Time A. Now seek and step through the video to find the last frame before the scene change. Make a note of the current time, this will be New Time A.
 
-Find another line that ends on a scene change, this time as late as possible. Do the same steps to record Original Time B and New Time B.
+## Installation
 
-Select all the lines that you would like to modify. Go to Automation > Timewarp. Enter the four values you have recorded. The start and end times for all selected lines will be updated.
+1. Open your Aegisub user directory, that contains the `automation` sub-directory.
+1. Copy `timewarp.lua` to the `autoload` sub-directory within `automation`.
+3. Restart Aegisub, or from the *Automation* menu select *Automation...>Rescan Autoload Dir*.
+
+
+## Usage
+
+**Video demo:**
+
+https://github.com/user-attachments/assets/2d8b3304-aca5-4440-83f0-0608090e5f2d
+
+### Syntax
+
+Timestamps take for form of `[H]H:MM:SS[.frac]`.
+> Eg:
+> - `01:03:08.123` (milliseconds precision)
+> - `1:03:08.12` (no leading hour zero, centiseconds precision)
+> - `1:03:08` (no fractional seconds value)
+
+### Interpolating between A-B points of multiple subtitles
+
+1. Select two or more subtitles and from Aegisub's *Automation* menu select *Timewarp*.
+2. In the *New Time A*/*New Time B* fields adjust the timestamps as wanted. These represent the start time of the first and last items in the selection, respectively.
+3. Click *OK*.
+
+If both A and B timestamps are changed then both subtitle A and B will have the offsets applied and any subtitles in-between A and B will be proportionally interpolated proportionally to fit between the new values.
+
+Alternatively if for example only subtitle A's time is adjusted then every subtitle from and including subtitle A's start time up to but not including subtitle B's start time will be interpolated.
+
+### Shifting the time of a single subtitle
+
+1. Select a single subtitle and from Aegisub's *Automation* menu select *Timewarp*.
+2. In the *New Time Shift* field change the timestamp to the new time you want the subtitle to begin.
+3. Click *OK*.
+
+This will offset that subtitle while preserving its duration.
+
+### Shifting the time of multiple subtitles
+
+1. Select two or more subtitles and from Aegisub's *Automation* menu select *Timewarp*.
+2. In the *New Time A*/*New Time B* fields adjust both timestamps by the same amount backward/forward in time.
+	> Eg: if sub A's time is `00:02:12.340` and B's `00:05:52.560` then to shift all the subtitles equally back by 2s they should become `00:02:10.340` and `00:02:50.340`, respectively.
+3. Click *OK*.
