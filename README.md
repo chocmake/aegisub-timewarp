@@ -29,7 +29,7 @@ https://github.com/user-attachments/assets/2d8b3304-aca5-4440-83f0-0608090e5f2d
 
 ### Syntax
 
-Timestamps take for form of `[H]H:MM:SS[.frac]`.
+Timestamps take the form of `[H]H:MM:SS[.frac]`.
 > Eg:
 > - `01:03:08.123` (milliseconds precision)
 > - `1:03:08.12` (no leading hour zero, centiseconds precision)
